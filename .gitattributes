@@ -1,0 +1,3 @@
+# Ensure ASTRA-sim sources are counted in language statistics
+external/astra-sim/** linguist-vendored=false
+external/astra-sim/** linguist-detectable=true
