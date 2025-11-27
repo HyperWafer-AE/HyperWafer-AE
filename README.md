@@ -64,11 +64,6 @@ Quick install:
 ```bash
 python3 -m venv .venv && source .venv/bin/activate
 pip install -r requirements.txt
-```
-
-> Need full setup steps (system packages, Mt-KaHyPar build, ASTRA-sim build)?
-> See [`docs/REPRODUCTION.md`](docs/REPRODUCTION.md) for a detailed checklist
-> and troubleshooting tips.
 
 ---
 
