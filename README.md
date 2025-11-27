@@ -59,13 +59,6 @@ Notes:
 | Chakra converter | `chakra_converter` CLI | Install via `pip install chakra-tools` or the Chakra repo. |
 | ASTRA-sim (analytical) | Snapshot under `external/astra-sim/` | Build via `scripts/build_astrasim_analytical.sh`. |
 
-Quick install:
-
-```bash
-python3 -m venv .venv && source .venv/bin/activate
-pip install -r requirements.txt
-
----
 
 ## 4. Building ASTRA-sim (analytical backend)
 
