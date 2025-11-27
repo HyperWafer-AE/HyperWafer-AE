@@ -1,0 +1,7 @@
+# Analytical Network Input File - 4x4 Torus
+
+topology: [ Torus2D(8x8) ]
+npus_count: [ 64 ]
+bandwidth: [ 60.0 ]
+latency: [ 400.0 ]
+

@@ -1,0 +1,7 @@
+# Analytical Network Input File - radix-4 Butterfly
+
+topology: [ Butterfly(4x3) ]
+npus_count: [ 64 ]
+bandwidth: [ 70.0 ]
+latency: [ 350.0 ]
+

@@ -4,9 +4,13 @@ LICENSE file in the root directory of this source tree.
 *******************************************************************************/
 
 #include "congestion_aware/Helper.h"
+#include "common/TopologyUtils.h"
+#include "congestion_aware/Butterfly.h"
 #include "congestion_aware/FullyConnected.h"
+#include "congestion_aware/Mesh2D.h"
 #include "congestion_aware/Ring.h"
 #include "congestion_aware/Switch.h"
+#include "congestion_aware/Torus2D.h"
 #include <cstdlib>
 #include <iostream>
 
@@ -21,6 +25,7 @@ std::shared_ptr<Topology> NetworkAnalyticalCongestionAware::construct_topology(
     const auto npus_counts_per_dim = network_parser.get_npus_counts_per_dim();
     const auto bandwidths_per_dim = network_parser.get_bandwidths_per_dim();
     const auto latencies_per_dim = network_parser.get_latencies_per_dim();
+    const auto topology_params_per_dim = network_parser.get_topology_params_per_dim();
 
     // for now, congestion_aware backend supports 1-dim topology only
     if (dims_count != 1) {
@@ -33,6 +38,7 @@ std::shared_ptr<Topology> NetworkAnalyticalCongestionAware::construct_topology(
     const auto npus_count = npus_counts_per_dim[0];
     const auto bandwidth = bandwidths_per_dim[0];
     const auto latency = latencies_per_dim[0];
+    const auto params = topology_params_per_dim[0];
 
     switch (topology_type) {
     case TopologyBuildingBlock::Ring:
@@ -41,9 +47,20 @@ std::shared_ptr<Topology> NetworkAnalyticalCongestionAware::construct_topology(
         return std::make_shared<Switch>(npus_count, bandwidth, latency);
     case TopologyBuildingBlock::FullyConnected:
         return std::make_shared<FullyConnected>(npus_count, bandwidth, latency);
+    case TopologyBuildingBlock::Mesh2D: {
+        const auto shape = parse_mesh2d_shape(params, npus_count);
+        return std::make_shared<Mesh2D>(npus_count, bandwidth, latency, shape.rows, shape.cols);
+    }
+    case TopologyBuildingBlock::Torus2D: {
+        const auto shape = parse_torus2d_shape(params, npus_count);
+        return std::make_shared<Torus2D>(npus_count, bandwidth, latency, shape.rows, shape.cols);
+    }
+    case TopologyBuildingBlock::Butterfly: {
+        const auto spec = parse_butterfly_spec(params, npus_count);
+        return std::make_shared<Butterfly>(npus_count, bandwidth, latency, spec.radix, spec.stages);
+    }
     default:
-        // shouldn't reaach here
-        std::cerr << "[Error] (network/analytical/congestion_aware) " << "not supported basic-topology" << std::endl;
+        std::cerr << "[Error] (network/analytical/congestion_aware) Unsupported topology" << std::endl;
         std::exit(-1);
     }
 }

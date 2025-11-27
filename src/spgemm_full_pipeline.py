@@ -1,4 +1,6 @@
 #!/usr/bin/env python3
+# SPDX-License-Identifier: MIT
+# Copyright (c) 2025 HyperWafer Authors
 from __future__ import annotations
 
 import argparse

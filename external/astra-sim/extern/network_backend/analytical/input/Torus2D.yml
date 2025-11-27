@@ -1,0 +1,5 @@
+# 2D Torus topology example
+topology: [ Torus2D(rows=4, cols=4) ]
+npus_count: [ 16 ]
+bandwidth: [ 60.0 ]  # GB/s
+latency: [ 400.0 ]  # ns

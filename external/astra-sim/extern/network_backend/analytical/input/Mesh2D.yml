@@ -1,0 +1,5 @@
+# 2D Mesh topology example
+topology: [ Mesh2D(4x4) ]  # Mesh2D(rows x cols)
+npus_count: [ 16 ]
+bandwidth: [ 60.0 ]  # GB/s
+latency: [ 500.0 ]  # ns

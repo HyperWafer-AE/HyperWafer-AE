@@ -1,0 +1,7 @@
+# Analytical Network Input File - 4x4 Mesh
+
+topology: [ Mesh2D(8x8) ]
+npus_count: [ 64 ]
+bandwidth: [ 60.0 ]  # GB/s per link
+latency: [ 500.0 ]   # ns per hop
+

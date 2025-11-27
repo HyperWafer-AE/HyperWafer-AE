@@ -1,0 +1,5 @@
+# Butterfly topology example
+topology: [ Butterfly(radix=4, stages=3) ]
+npus_count: [ 64 ]
+bandwidth: [ 70.0 ]  # GB/s
+latency: [ 350.0 ]  # ns

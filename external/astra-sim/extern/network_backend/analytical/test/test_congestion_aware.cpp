@@ -97,6 +97,27 @@ TEST_F(TestNetworkAnalyticalCongestionAware, Switch) {
     EXPECT_EQ(simulation_time, 40'062);
 }
 
+TEST_F(TestNetworkAnalyticalCongestionAware, Mesh2DRoute) {
+    const auto network_parser = NetworkParser("../../input/Mesh2D.yml");
+    const auto topology = construct_topology(network_parser);
+    const auto route = topology->route(0, 15);
+    EXPECT_EQ(route.size(), 7);  // 6 hops + destination
+}
+
+TEST_F(TestNetworkAnalyticalCongestionAware, Torus2DRoute) {
+    const auto network_parser = NetworkParser("../../input/Torus2D.yml");
+    const auto topology = construct_topology(network_parser);
+    const auto route = topology->route(0, 3);
+    EXPECT_EQ(route.size(), 2);  // wrap-around in a single hop
+}
+
+TEST_F(TestNetworkAnalyticalCongestionAware, ButterflyRoute) {
+    const auto network_parser = NetworkParser("../../input/Butterfly.yml");
+    const auto topology = construct_topology(network_parser);
+    const auto route = topology->route(0, 17);
+    EXPECT_EQ(route.size(), 4);  // src + two router stages + dest
+}
+
 TEST_F(TestNetworkAnalyticalCongestionAware, AllGatherOnRing) {
     /// setup
     const auto network_parser = NetworkParser("../../input/Ring.yml");

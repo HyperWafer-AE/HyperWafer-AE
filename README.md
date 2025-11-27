@@ -47,52 +47,28 @@ Notes:
 
 ---
 
-## 3. Requirements
+## 3. Environment & dependencies
 
-### 3.1 Python
+| Layer | Requirement | Notes |
+|-------|-------------|-------|
+| OS | Ubuntu 22.04 LTS (tested) | Any recent Debian/Ubuntu with `glibc >= 2.31` is fine. |
+| System packages | `git`, `cmake >= 3.15`, `g++ >= 11`, `make`, `python3`, `pip` | `sudo apt install git build-essential cmake python3 python3-venv` |
+| Python | 3.9 – 3.11 | Create a venv/conda env to isolate packages. |
+| Python deps | `numpy`, `scipy`, `ssgetpy`, `tqdm`, `PyYAML` | `pip install -r requirements.txt` |
+| Mt-KaHyPar | Latest `main` build | Needed for hypergraph partitioning (`--mtk-bin`). |
+| Chakra converter | `chakra_converter` CLI | Install via `pip install chakra-tools` or the Chakra repo. |
+| ASTRA-sim (analytical) | Snapshot under `external/astra-sim/` | Build via `scripts/build_astrasim_analytical.sh`. |
 
-- Python 3.9+ (tested with 3.10)
-- Install Python dependencies via:
+Quick install:
 
 ```bash
+python3 -m venv .venv && source .venv/bin/activate
 pip install -r requirements.txt
 ```
 
-`requirements.txt` includes:
-
-- `numpy`
-- `scipy`
-- `ssgetpy`
-- `tqdm`
-- `PyYAML`
-
-### 3.2 External tools
-
-The pipeline expects the following external, non-Python tools:
-
-1. **Mt-KaHyPar**
-
-   - GitHub: <https://github.com/kahypar/mt-kahypar>
-
-   - Build the `MtKaHyPar` binary, e.g.:
-
-     ```bash
-     mt-kahypar/build/mt-kahypar/application/MtKaHyPar
-     ```
-
-   - You will pass this path via `--mtk-bin`.
-
-2. **Chakra converter (`chakra_converter`)**
-
-   - Part of the Chakra / ASTRA-sim ecosystem.
-   - Should be accessible as a CLI (`chakra_converter`) in your active environment.
-   - The path/name is passed via `--chakra-bin`.
-
-3. **ASTRA-sim analytical backend**
-
-   - This repository bundles a snapshot of ASTRA-sim under `external/astra-sim/`.
-   - You need to build the **analytical network backend** binary:
-     `AstraSim_Analytical_Congestion_Aware`.
+> Need full setup steps (system packages, Mt-KaHyPar build, ASTRA-sim build)?
+> See [`docs/REPRODUCTION.md`](docs/REPRODUCTION.md) for a detailed checklist
+> and troubleshooting tips.
 
 ---
 
@@ -196,7 +172,6 @@ Comm-time speedup (AstraSim, WaferSpMM/HyperWafer): ...
 This gives you an end-to-end comparison of the baseline row-block mapping vs the HyperWafer hypergraph mapping, both in terms of oracle metrics and ASTRA-sim communication time.
 
 ---
-
 ## 6. CLI usage of `spgemm_full_pipeline.py`
 
 Although `examples/run_pesa.sh` is the recommended entry point for reproducibility, you can also invoke the pipeline directly:
@@ -270,8 +245,13 @@ for the complete list and detailed descriptions.
 
 This project is released under the **MIT License**. See [LICENSE](LICENSE) for details.
 
-The directory `external/astra-sim/` contains a snapshot of the ASTRA-sim codebase, which retains its original license and copyright
-notices from the ASTRA-sim authors.
+### Third-party components
+
+- `external/astra-sim/` &mdash; snapshot of [astra-sim/astra-sim](https://github.com/astra-sim/astra-sim).
+  - License: see `external/astra-sim/LICENSE` (Apache 2.0).
+  - We only apply local patches; all upstream copyright notices remain intact.
+  - When building or redistributing, please comply with the upstream license and cite the ASTRA-sim paper.
+
 
 ---
 

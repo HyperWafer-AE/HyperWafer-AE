@@ -60,6 +60,12 @@ class NetworkParser {
      */
     [[nodiscard]] std::vector<TopologyBuildingBlock> get_topologies_per_dim() const noexcept;
 
+    /**
+     * Retrieve the optional parameter string associated with each topology
+     * token. Entries are empty when no parameter was provided.
+     */
+    [[nodiscard]] std::vector<std::string> get_topology_params_per_dim() const noexcept;
+
   private:
     /// number of network dimensions
     int dims_count;
@@ -76,11 +82,15 @@ class NetworkParser {
     /// topology building block per each dimension
     std::vector<TopologyBuildingBlock> topology_per_dim;
 
+    /// optional topology parameters per dimension
+    std::vector<std::string> topology_params_per_dim;
+
     /**
      * Parse topology name (in string) into TopologyBuildingBlock enum
      *
      * @param topology_name topology name in string
-     *    which can be "Ring", "FullyConnected", or "Switch"
+     *    which can be "Ring", "FullyConnected", "Switch",
+     *    "Mesh2D", "Torus2D", or "Butterfly"
      * @return parsed TopologyBuildingBlock enum class value
      */
     [[nodiscard]] static TopologyBuildingBlock parse_topology_name(const std::string& topology_name) noexcept;

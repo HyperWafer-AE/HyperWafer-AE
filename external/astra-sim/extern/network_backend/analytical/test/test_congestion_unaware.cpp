@@ -4,12 +4,24 @@ LICENSE file in the root directory of this source tree.
 *******************************************************************************/
 
 #include "common/NetworkParser.h"
+#include "common/TopologyUtils.h"
 #include "common/Type.h"
 #include "congestion_unaware/Helper.h"
 #include <gtest/gtest.h>
 
 using namespace NetworkAnalytical;
 using namespace NetworkAnalyticalCongestionUnaware;
+
+namespace {
+
+EventTime expected_delay(int hops, Latency latency, Bandwidth bandwidth_GBps, ChunkSize chunk_size) {
+    const auto bandwidth_Bpns = bandwidth_GBps * (1ull << 30) / 1'000'000'000;
+    const auto serialization = static_cast<double>(chunk_size) / bandwidth_Bpns;
+    const auto total = latency * hops + serialization;
+    return static_cast<EventTime>(total);
+}
+
+}  // namespace
 
 class TestNetworkAnalyticalCongestionUnaware : public ::testing::Test {
   protected:
@@ -67,4 +79,43 @@ TEST_F(TestNetworkAnalyticalCongestionUnaware, Ring_FullyConnected_Switch) {
     // run on dim 3
     const auto comm_delay_dim3 = topology->send(26, 42, chunk_size);
     EXPECT_EQ(comm_delay_dim3, 23'531);
+}
+
+TEST_F(TestNetworkAnalyticalCongestionUnaware, Mesh2D) {
+    const auto network_parser = NetworkParser("../../input/Mesh2D.yml");
+    const auto topology = construct_topology(network_parser);
+
+    const auto comm_delay = topology->send(0, 15, chunk_size);
+    const auto expected = expected_delay(6, 500.0, 60.0, chunk_size);
+    EXPECT_EQ(comm_delay, expected);
+}
+
+TEST_F(TestNetworkAnalyticalCongestionUnaware, Torus2D) {
+    const auto network_parser = NetworkParser("../../input/Torus2D.yml");
+    const auto topology = construct_topology(network_parser);
+
+    const auto comm_delay = topology->send(0, 3, chunk_size);
+    const auto expected = expected_delay(1, 400.0, 60.0, chunk_size);
+    EXPECT_EQ(comm_delay, expected);
+}
+
+TEST_F(TestNetworkAnalyticalCongestionUnaware, Butterfly) {
+    const auto network_parser = NetworkParser("../../input/Butterfly.yml");
+    const auto topology = construct_topology(network_parser);
+
+    const auto comm_delay = topology->send(0, 17, chunk_size);
+    const auto expected = expected_delay(3, 350.0, 70.0, chunk_size);
+    EXPECT_EQ(comm_delay, expected);
+}
+
+TEST(TopologyParamParserTest, MeshDefaults) {
+    const auto shape = parse_mesh2d_shape("", 36);
+    EXPECT_EQ(shape.rows * shape.cols, 36);
+    EXPECT_LE(shape.rows, shape.cols);
+}
+
+TEST(TopologyParamParserTest, ButterflyRadixOnly) {
+    const auto spec = parse_butterfly_spec("radix=4", 64);
+    EXPECT_EQ(spec.radix, 4);
+    EXPECT_EQ(spec.stages, 3);
 }
